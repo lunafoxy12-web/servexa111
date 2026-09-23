@@ -1,0 +1,121 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Registered platform user including customer, provider, and administrator accounts.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 120 },
+        "email": { "type": "string", "format": "email", "maxLength": 150 },
+        "role": { "type": "string", "enum": ["customer", "provider", "admin"] },
+        "phone": { "type": "string", "maxLength": 30 },
+        "avatar": { "type": "string", "maxLength": 2048 },
+        "walletBalance": { "type": "number" },
+        "walletStatus": { "type": "string", "enum": ["pending_approval", "active", "suspended"] },
+        "identityVerified": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["active", "suspended", "pending"] },
+        "currency": { "type": "string", "maxLength": 10 },
+        "selectedCurrency": { "type": "string", "maxLength": 10 },
+        "balances": { "type": "object" },
+        "countryCode": { "type": "string", "maxLength": 10 },
+        "documentCountry": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "name", "email", "role"]
+    },
+    "Verification": {
+      "title": "Verification",
+      "description": "Identity verification document submission for wallet unlocking.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "userName": { "type": "string", "maxLength": 120 },
+        "userEmail": { "type": "string", "format": "email", "maxLength": 150 },
+        "userRole": { "type": "string", "enum": ["customer", "provider", "admin"] },
+        "documentType": { "type": "string", "maxLength": 50 },
+        "documentNumber": { "type": "string", "maxLength": 50 },
+        "documentImage": { "type": "string", "maxLength": 2048 },
+        "country": { "type": "string", "maxLength": 100 },
+        "issuingCountry": { "type": "string", "maxLength": 100 },
+        "status": { "type": "string", "enum": ["pending_approval", "verified", "rejected"] },
+        "submittedAt": { "type": "string" },
+        "reviewedAt": { "type": "string" },
+        "reviewedBy": { "type": "string", "maxLength": 128 }
+      },
+      "required": ["id", "userId", "documentType", "documentImage", "status"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "On-demand dispatch or scheduled service booking.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "customerId": { "type": "string", "maxLength": 128 },
+        "customerName": { "type": "string", "maxLength": 120 },
+        "providerId": { "type": "string", "maxLength": 128 },
+        "providerName": { "type": "string", "maxLength": 120 },
+        "serviceName": { "type": "string", "maxLength": 200 },
+        "status": { "type": "string", "enum": ["pending", "accepted", "on_the_way", "in_progress", "completed", "cancelled"] },
+        "price": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "customerId", "providerId", "serviceName", "status", "price"]
+    },
+    "WalletTransaction": {
+      "title": "WalletTransaction",
+      "description": "Financial ledger entry for deposits, earnings, payments, and payouts.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "amount": { "type": "number" },
+        "type": { "type": "string", "enum": ["deposit", "payment", "payout", "commission", "earning"] },
+        "status": { "type": "string", "enum": ["pending", "succeeded", "failed"] },
+        "description": { "type": "string", "maxLength": 255 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "amount", "type", "status", "description"]
+    },
+    "Complaint": {
+      "title": "Complaint",
+      "description": "Support ticket or billing dispute filed by a customer or provider.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "ticketNumber": { "type": "string", "maxLength": 32 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "targetUserId": { "type": "string", "maxLength": 128 },
+        "subject": { "type": "string", "maxLength": 200 },
+        "status": { "type": "string", "enum": ["open", "under_review", "resolved", "dismissed"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "ticketNumber", "userId", "subject", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Master user profiles with authentication mapping."
+    },
+    "/bookings/{bookingId}": {
+      "schema": { "$ref": "#/entities/Booking" },
+      "description": "Service dispatch orders and ride bookings."
+    },
+    "/transactions/{transactionId}": {
+      "schema": { "$ref": "#/entities/WalletTransaction" },
+      "description": "Ledger records for transactions and payment settlements."
+    },
+    "/complaints/{complaintId}": {
+      "schema": { "$ref": "#/entities/Complaint" },
+      "description": "Disputes and customer service tickets."
+    },
+    "/verifications/{verificationId}": {
+      "schema": { "$ref": "#/entities/Verification" },
+      "description": "Identity verification documents and wallet approval submissions."
+    }
+  }
+}

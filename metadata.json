@@ -1,0 +1,12 @@
+{
+  "name": "Servexa World",
+  "description": "Global on-demand service marketplace & provider store network with 15-second rapid dispatch, in-chat billing, live GPS radar, and multi-currency commerce.",
+  "requestFramePermissions": [
+    "microphone",
+    "geolocation",
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
